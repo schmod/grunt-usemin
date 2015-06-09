@@ -62,20 +62,45 @@ describe('File', function () {
     var filename = path.join(__dirname, '/fixtures/block_with_IEconditionals_inline.html');
     var file = new File(filename);
     assert.equal(1, file.blocks.length);
+    assert.equal(1,file.blocks[0].src.length);
     assert.ok(file.blocks[0].conditionalStart);
     assert.ok(file.blocks[0].conditionalEnd);
-    assert.equal('[if (lt IE 9) & (!IEmobile)]>', file.blocks[0].conditionalStart);
-    assert.equal('<![endif]', file.blocks[0].conditionalEnd);
+    assert.equal('<!--[if (lt IE 9) & (!IEmobile)]>', file.blocks[0].conditionalStart);
+    assert.equal('<![endif]-->', file.blocks[0].conditionalEnd);
+  });
+
+  it('should also detect block that has exposed IE conditionals on same line', function () {
+    var filename = path.join(__dirname, '/fixtures/block_with_IEconditionals_inline_exposed.html');
+    var file = new File(filename);
+    assert.equal(1, file.blocks.length);
+    assert.equal(1,file.blocks[0].src.length);
+    assert.ok(file.blocks[0].conditionalStart);
+    assert.ok(file.blocks[0].conditionalEnd);
+    assert.equal('<!--[if (lt IE 9) & (!IEmobile)]><!-->', file.blocks[0].conditionalStart);
+    assert.equal('<!--<![endif]-->', file.blocks[0].conditionalEnd);
   });
 
   it('should also detect block that has IE conditionals within block', function () {
     var filename = path.join(__dirname, '/fixtures/block_with_IEconditionals_within.html');
     var file = new File(filename);
     assert.equal(1, file.blocks.length);
+    assert.equal(1,file.blocks[0].src.length);
     assert.ok(file.blocks[0].conditionalStart);
     assert.ok(file.blocks[0].conditionalEnd);
-    assert.equal('[if (lt IE 9) & (!IEmobile)]>', file.blocks[0].conditionalStart);
-    assert.equal('<![endif]', file.blocks[0].conditionalEnd);
+    assert.equal('<!--[if (lt IE 9) & (!IEmobile)]>', file.blocks[0].conditionalStart);
+    assert.equal('<![endif]-->', file.blocks[0].conditionalEnd);
+
+  });
+
+  it('should also detect block that has uncommented IE conditionals within block', function () {
+    var filename = path.join(__dirname, '/fixtures/block_with_IEconditionals_within_exposed.html');
+    var file = new File(filename);
+    assert.equal(1, file.blocks.length);
+    assert.equal(1,file.blocks[0].src.length);
+    assert.ok(file.blocks[0].conditionalStart);
+    assert.ok(file.blocks[0].conditionalEnd);
+    assert.equal('<!--[if (lt IE 9) & (!IEmobile)]><!-->', file.blocks[0].conditionalStart);
+    assert.equal('<!--<![endif]-->', file.blocks[0].conditionalEnd);
   });
 
   it('should throw an exception if it finds RequireJS blocks', function () {
